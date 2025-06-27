@@ -7,6 +7,13 @@ from .user import (
     ProfileOut,
     ProfileUpdate,
 )
+from .category import (
+    CategoryBase,
+    CategoryCreate,
+    CategoryUpdate,
+    CategoryPage,
+    CategoryTree,
+)
 
 __all__ = [
     "UserCreate",
@@ -18,4 +25,9 @@ __all__ = [
     "RoleUpdate",
     "ProfileOut",
     "ProfileUpdate",
+    "CategoryBase",
+    "CategoryCreate",
+    "CategoryUpdate",
+    "CategoryPage",
+    "CategoryTree",
 ]

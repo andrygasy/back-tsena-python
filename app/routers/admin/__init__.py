@@ -1,3 +1,3 @@
-from . import users
+from . import users, categories
 
-__all__ = ["users"]
+__all__ = ["users", "categories"]
