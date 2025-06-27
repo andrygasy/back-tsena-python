@@ -7,6 +7,7 @@ from .user import (
     ProfileOut,
     ProfileUpdate,
 )
+from .profile import UpdateProfile
 from .category import (
     CategoryBase,
     CategoryCreate,
@@ -39,6 +40,7 @@ __all__ = [
     "RoleUpdate",
     "ProfileOut",
     "ProfileUpdate",
+    "UpdateProfile",
     "CategoryBase",
     "CategoryCreate",
     "CategoryUpdate",
