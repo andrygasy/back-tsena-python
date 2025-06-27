@@ -14,6 +14,13 @@ from .category import (
     CategoryPage,
     CategoryTree,
 )
+from .product import (
+    ProductBase,
+    ProductCreate,
+    ProductUpdate,
+    ProductPage,
+    StatusUpdate as ProductStatusUpdate,
+)
 
 __all__ = [
     "UserCreate",
@@ -30,4 +37,9 @@ __all__ = [
     "CategoryUpdate",
     "CategoryPage",
     "CategoryTree",
+    "ProductBase",
+    "ProductCreate",
+    "ProductUpdate",
+    "ProductPage",
+    "ProductStatusUpdate",
 ]
