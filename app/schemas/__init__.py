@@ -29,6 +29,7 @@ from .orders import (
     OrderStatusUpdate,
     OrderItem,
 )
+from .search import SearchParams
 
 __all__ = [
     "UserCreate",
@@ -56,4 +57,5 @@ __all__ = [
     "OrderPage",
     "OrderStatusUpdate",
     "OrderItem",
+    "SearchParams",
 ]
