@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+pydantic
+sqlalchemy>=1.4
+asyncpg
+bcrypt
+PyJWT
+pytest
+httpx
