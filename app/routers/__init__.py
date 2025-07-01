@@ -7,6 +7,9 @@ from .admin import (
     categories as admin_categories,
     products as admin_products,
     orders as admin_orders,
+    hero_slides as admin_hero_slides,
+    promotions as admin_promotions,
+    dashboard as admin_dashboard,
 )
 
 api_router = APIRouter()
@@ -20,6 +23,9 @@ api_router.include_router(admin_users.router, tags=["admin"])
 api_router.include_router(admin_categories.router, tags=["admin"])
 api_router.include_router(admin_products.router, tags=["admin"])
 api_router.include_router(admin_orders.router, tags=["admin"])
+api_router.include_router(admin_hero_slides.router, tags=["admin"])
+api_router.include_router(admin_promotions.router, tags=["admin"])
+api_router.include_router(admin_dashboard.router, tags=["admin"])
 api_router.include_router(professional_products.router, tags=["professional"])
 __all__ = [
     "api_router",
@@ -33,5 +39,8 @@ __all__ = [
     "admin_categories",
     "admin_products",
     "admin_orders",
+    "admin_hero_slides",
+    "admin_promotions",
+    "admin_dashboard",
     "professional_products",
 ]

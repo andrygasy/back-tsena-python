@@ -30,6 +30,8 @@ from .orders import (
     OrderItem,
 )
 from .search import SearchParams
+from .hero_slide import HeroSlideBase, HeroSlideCreate, HeroSlideUpdate, HeroSlidePage
+from .promotion import PromotionBase, PromotionCreate, PromotionUpdate, PromotionPage
 
 __all__ = [
     "UserCreate",
@@ -58,4 +60,12 @@ __all__ = [
     "OrderStatusUpdate",
     "OrderItem",
     "SearchParams",
+    "HeroSlideBase",
+    "HeroSlideCreate",
+    "HeroSlideUpdate",
+    "HeroSlidePage",
+    "PromotionBase",
+    "PromotionCreate",
+    "PromotionUpdate",
+    "PromotionPage",
 ]
