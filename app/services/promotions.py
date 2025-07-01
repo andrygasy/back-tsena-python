@@ -23,6 +23,8 @@ async def find_one(session: AsyncSession, promotion_id: UUID) -> Promotion:
     return promo
 
 async def create(session: AsyncSession, data) -> Promotion:
+    if data.start_date >= data.end_date:
+        raise HTTPException(status_code=400, detail="Invalid dates")
     promo = Promotion(**data.dict())
     session.add(promo)
     await session.commit()
@@ -31,7 +33,11 @@ async def create(session: AsyncSession, data) -> Promotion:
 
 async def update(session: AsyncSession, promotion_id: UUID, data) -> Promotion:
     promo = await find_one(session, promotion_id)
-    for k, v in data.dict(exclude_unset=True).items():
+    update_data = data.dict(exclude_unset=True)
+    if "start_date" in update_data and "end_date" in update_data:
+        if update_data["start_date"] >= update_data["end_date"]:
+            raise HTTPException(status_code=400, detail="Invalid dates")
+    for k, v in update_data.items():
         setattr(promo, k, v)
     await session.commit()
     await session.refresh(promo)
