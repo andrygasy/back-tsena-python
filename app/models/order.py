@@ -4,8 +4,8 @@ from sqlalchemy import Column, DateTime, Float, ForeignKey, String
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
-
-from .user import Base, User
+from app.db.session import Base
+from .user import User
 
 class OrderStatus(str, Enum):
     pending = "pending"

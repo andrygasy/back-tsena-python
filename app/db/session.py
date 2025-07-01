@@ -1,9 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-from app.core.config import settings
-
-DATABASE_URL = settings.DATABASE_URL
+DATABASE_URL = "postgresql://postgres:postgres@db:5432/postgres"
 
 # Création du moteur SQLAlchemy
 engine = create_engine(DATABASE_URL)

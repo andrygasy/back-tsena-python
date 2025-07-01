@@ -4,7 +4,7 @@ from sqlalchemy import Column, String, Text, Float, DateTime, Boolean, Integer
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.sql import func
 
-from .user import Base
+from app.db.session import Base
 
 
 class PromotionDiscountType(str, Enum):

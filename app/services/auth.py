@@ -9,11 +9,13 @@ from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.orm import Session
 from sqlalchemy.future import select
 
-from app.core.config import settings
+
 from app.models import User
 from app.db.session import get_db
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+SECRET_KEY: str = "change-me"
+ALGORITHM: str = "HS256"
 
 def get_user_by_email(session: Session, email: str) -> Optional[User]:
     result = session.execute(select(User).where(User.email == email))
@@ -44,7 +46,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
     else:
         expire = datetime.now(timezone.utc) + timedelta(minutes=15)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
 def get_current_user(

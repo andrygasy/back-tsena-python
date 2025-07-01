@@ -5,7 +5,7 @@ from sqlalchemy.dialects.postgresql import UUID, ARRAY
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
-from .user import Base
+from app.db.session import Base
 
 class ProductStatus(str, Enum):
     active = "active"

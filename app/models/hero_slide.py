@@ -3,7 +3,7 @@ from sqlalchemy import Column, String, Integer, Boolean, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 
-from .user import Base
+from app.db.session import Base
 
 class HeroSlide(Base):
     __tablename__ = "hero_slides"

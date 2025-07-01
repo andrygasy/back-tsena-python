@@ -6,6 +6,7 @@ from .service import Service
 from .hero_slide import HeroSlide
 from .promotion import Promotion, PromotionDiscountType
 
+
 __all__ = [
     "User",
     "Base",

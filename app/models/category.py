@@ -4,7 +4,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship, backref
 
-from .user import Base
+from app.db.session import Base
 
 class Category(Base):
     __tablename__ = "categories"
