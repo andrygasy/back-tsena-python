@@ -1,8 +1,7 @@
 fastapi
-uvicorn[standard]
+uvicorn
 python-dotenv
-pydantic[email]<2
-pydantic-settings<2
+pydantic==2.10.6
 sqlalchemy>=1.4
 asyncpg
 bcrypt
@@ -10,3 +9,4 @@ PyJWT
 pytest
 httpx
 fastapi-jwt-auth
+pydantic_settings

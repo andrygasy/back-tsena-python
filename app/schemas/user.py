@@ -1,11 +1,11 @@
 from typing import Optional, List
 from datetime import datetime
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 
 class UserBase(BaseModel):
     id: int
     name: Optional[str]
-    email: EmailStr
+    email: str
     role: str
     status: str
     created_at: datetime
@@ -37,7 +37,7 @@ class RoleUpdate(BaseModel):
 class ProfileOut(BaseModel):
     id: int
     name: Optional[str]
-    email: EmailStr
+    email: str
     is_professional: bool
     professional_type: Optional[str]
     avatar: Optional[str]
