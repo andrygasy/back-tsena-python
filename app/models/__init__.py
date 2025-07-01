@@ -4,7 +4,7 @@ from .product import Product
 from .order import Order
 from .service import Service
 from .hero_slide import HeroSlide
-from .promotion import Promotion
+from .promotion import Promotion, PromotionDiscountType
 
 __all__ = [
     "User",
@@ -15,4 +15,5 @@ __all__ = [
     "Service",
     "HeroSlide",
     "Promotion",
+    "PromotionDiscountType",
 ]

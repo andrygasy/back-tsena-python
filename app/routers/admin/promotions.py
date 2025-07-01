@@ -49,11 +49,11 @@ async def update_promo(
 ):
     return await service.update(session, promo_id, data)
 
-@router.delete("/api/admin/promotions/{promo_id}")
+@router.delete("/api/admin/promotions/{promo_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_promo(
     promo_id: UUID,
     session: AsyncSession = Depends(get_session),
     admin=Depends(require_role("admin")),
 ):
     await service.remove(session, promo_id)
-    return {"message": "Promotion supprimée"}
+    return None

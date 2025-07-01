@@ -76,10 +76,11 @@ async def test_admin_hero_slides_and_promotions_and_dashboard():
         # promotions
         promo_data = {
             "name": "Promo",
-            "discount_type": "percent",
-            "value": 10,
+            "discount_type": "percentage",
+            "discount_value": 10,
             "start_date": datetime.utcnow().isoformat(),
             "end_date": (datetime.utcnow() + timedelta(days=1)).isoformat(),
+            "is_active": True,
         }
         resp = await ac.post("/api/admin/promotions", json=promo_data, headers=headers_admin)
         assert resp.status_code == 201
@@ -94,14 +95,14 @@ async def test_admin_hero_slides_and_promotions_and_dashboard():
 
         resp = await ac.put(
             f"/api/admin/promotions/{promo_id}",
-            json={"active": False},
+            json={"is_active": False},
             headers=headers_admin,
         )
         assert resp.status_code == 200
-        assert resp.json()["active"] is False
+        assert resp.json()["is_active"] is False
 
         resp = await ac.delete(f"/api/admin/promotions/{promo_id}", headers=headers_admin)
-        assert resp.status_code == 200
+        assert resp.status_code == 204
 
         # dashboard
         resp = await ac.get("/api/admin/dashboard", headers=headers_admin)
