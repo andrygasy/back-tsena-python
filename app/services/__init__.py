@@ -1,4 +1,15 @@
-from . import auth, user_service, categories, products, orders, profile, search_service
+from . import (
+    auth,
+    user_service,
+    categories,
+    products,
+    orders,
+    profile,
+    search_service,
+    hero_slides,
+    promotions,
+    dashboard,
+)
 
 __all__ = [
     "auth",
@@ -8,4 +19,7 @@ __all__ = [
     "orders",
     "profile",
     "search_service",
+    "hero_slides",
+    "promotions",
+    "dashboard",
 ]
