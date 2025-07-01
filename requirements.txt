@@ -9,5 +9,7 @@ PyJWT
 pytest
 httpx
 fastapi-jwt-auth
-
+sqlalchemy
+alembic
+psycopg2-binary
 email-validator
