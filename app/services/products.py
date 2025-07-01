@@ -3,12 +3,12 @@ from uuid import UUID
 
 from fastapi import HTTPException
 from sqlalchemy import select, func, update, delete, or_
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 
 from app.models import Product, ProductStatus
 
-async def find_all_public(
-    session: AsyncSession,
+def find_all_public(
+    session: Session,
     page: int,
     limit: int,
     category_id: Optional[UUID] = None,
@@ -27,51 +27,51 @@ async def find_all_public(
     if max_price is not None:
         query = query.where(Product.price <= max_price)
     count_query = select(func.count()).select_from(query.subquery())
-    total = await session.scalar(count_query)
-    result = await session.execute(
+    total = session.scalar(count_query)
+    result = session.execute(
         query.order_by(Product.created_at.desc()).offset((page - 1) * limit).limit(limit)
     )
     return result.scalars().all(), total or 0
 
-async def find_one(session: AsyncSession, product_id: UUID) -> Product:
-    result = await session.execute(select(Product).where(Product.id == product_id))
+def find_one(session: Session, product_id: UUID) -> Product:
+    result = session.execute(select(Product).where(Product.id == product_id))
     product = result.scalars().first()
     if not product:
         raise HTTPException(status_code=404, detail="Produit non trouvé.")
     return product
 
-async def create(session: AsyncSession, data) -> Product:
+def create(session: Session, data) -> Product:
     product = Product(**data.dict())
     session.add(product)
-    await session.commit()
-    await session.refresh(product)
+    session.commit()
+    session.refresh(product)
     return product
 
-async def update(session: AsyncSession, product_id: UUID, data) -> Product:
-    result = await session.execute(select(Product).where(Product.id == product_id))
+def update(session: Session, product_id: UUID, data) -> Product:
+    result = session.execute(select(Product).where(Product.id == product_id))
     product = result.scalars().first()
     if not product:
         raise HTTPException(status_code=404, detail="Produit non trouvé.")
     for key, value in data.dict(exclude_unset=True).items():
         setattr(product, key, value)
-    await session.commit()
-    await session.refresh(product)
+    session.commit()
+    session.refresh(product)
     return product
 
-async def remove(session: AsyncSession, product_id: UUID) -> None:
-    result = await session.execute(select(Product).where(Product.id == product_id))
+def remove(session: Session, product_id: UUID) -> None:
+    result = session.execute(select(Product).where(Product.id == product_id))
     product = result.scalars().first()
     if not product:
         raise HTTPException(status_code=404, detail="Produit non trouvé.")
-    await session.delete(product)
-    await session.commit()
+    session.delete(product)
+    session.commit()
 
-async def update_status(session: AsyncSession, product_id: UUID, status: str, reason: Optional[str]) -> Product:
-    result = await session.execute(select(Product).where(Product.id == product_id))
+def update_status(session: Session, product_id: UUID, status: str, reason: Optional[str]) -> Product:
+    result = session.execute(select(Product).where(Product.id == product_id))
     product = result.scalars().first()
     if not product:
         raise HTTPException(status_code=404, detail="Produit non trouvé.")
     product.status = status
-    await session.commit()
-    await session.refresh(product)
+    session.commit()
+    session.refresh(product)
     return product

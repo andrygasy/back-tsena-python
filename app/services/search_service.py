@@ -2,12 +2,12 @@ from typing import Literal, Optional, List, Dict
 
 from fastapi import HTTPException
 from sqlalchemy import select, func
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 
 from app.models import Product, Service
 
-async def search(
-    session: AsyncSession,
+def search(
+    session: Session,
     query: str,
     search_type: Literal["products", "services", "all"] = "all",
     page: int = 1,
@@ -27,8 +27,8 @@ async def search(
             func.to_tsvector('french', Product.name + ' ' + func.coalesce(Product.description, '')).op('@@')(ts_query)
         )
         count_query = select(func.count()).select_from(p_base.subquery())
-        total_p = await session.scalar(count_query)
-        result = await session.execute(
+        total_p = session.scalar(count_query)
+        result = session.execute(
             p_base.order_by(Product.created_at.desc()).offset((page - 1) * limit).limit(limit)
         )
         products = result.scalars().all()
@@ -39,8 +39,8 @@ async def search(
             func.to_tsvector('french', Service.name + ' ' + func.coalesce(Service.description, '')).op('@@')(ts_query)
         )
         count_query = select(func.count()).select_from(s_base.subquery())
-        total_s = await session.scalar(count_query)
-        result = await session.execute(
+        total_s = session.scalar(count_query)
+        result = session.execute(
             s_base.order_by(Service.created_at.desc()).offset((page - 1) * limit).limit(limit)
         )
         services = result.scalars().all()
