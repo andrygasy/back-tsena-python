@@ -21,7 +21,7 @@ async def test_profile_endpoints():
     async with async_session() as session:
         user = await create_user(session, "profile@test.com", "pass")
         await session.commit()
-        token = create_access_token(str(user.id))
+        token = create_access_token({"sub": str(user.id)})
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
         # unauthorized access

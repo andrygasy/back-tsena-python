@@ -23,8 +23,8 @@ async def test_products_crud():
         pro = await create_user(session, "pro@test.com", "pass")
         pro.role = "professional"
         await session.commit()
-        token_admin = create_access_token(str(admin.id))
-        token_pro = create_access_token(str(pro.id))
+        token_admin = create_access_token({"sub": str(admin.id)})
+        token_pro = create_access_token({"sub": str(pro.id)})
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
         headers_pro = {"Authorization": f"Bearer {token_pro}"}

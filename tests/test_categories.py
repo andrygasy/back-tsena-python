@@ -22,8 +22,8 @@ async def test_categories_crud():
         admin.role = "admin"
         user = await create_user(session, "user2@test.com", "pass")
         await session.commit()
-        token_admin = create_access_token(str(admin.id))
-        token_user = create_access_token(str(user.id))
+        token_admin = create_access_token({"sub": str(admin.id)})
+        token_user = create_access_token({"sub": str(user.id)})
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
         # unauthorized

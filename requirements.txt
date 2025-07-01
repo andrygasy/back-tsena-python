@@ -9,5 +9,5 @@ PyJWT
 pytest
 httpx
 fastapi-jwt-auth
-pydantic_settings
+
 email-validator
