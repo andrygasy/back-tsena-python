@@ -1,8 +1,8 @@
 from typing import Optional
 from fastapi import APIRouter, Depends, status
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 
-from app.db.session import get_session
+from app.db.session import get_db
 from app.schemas import UserPage, StatusUpdate, RoleUpdate
 from app.services import user_service
 from app.core.dependencies import require_role
@@ -16,37 +16,37 @@ async def list_users(
     role: Optional[str] = None,
     status: Optional[str] = None,
     search: Optional[str] = None,
-    session: AsyncSession = Depends(get_session),
+    session: Session = Depends(get_db),
     admin=Depends(require_role("admin")),
 ):
-    users, total = await user_service.find_all(session, page, limit, role, status, search)
+    users, total = user_service.find_all(session, page, limit, role, status, search)
     return {"users": users, "total": total, "page": page, "limit": limit}
 
 @router.put("/api/admin/users/{user_id}/status")
 async def update_user_status(
     user_id: int,
     data: StatusUpdate,
-    session: AsyncSession = Depends(get_session),
+    session: Session = Depends(get_db),
     admin=Depends(require_role("admin")),
 ):
-    await user_service.update_status(session, user_id, data.status, data.reason)
+    user_service.update_status(session, user_id, data.status, data.reason)
     return {"message": "Statut de l'utilisateur modifié avec succès."}
 
 @router.put("/api/admin/users/{user_id}/role")
 async def update_user_role(
     user_id: int,
     data: RoleUpdate,
-    session: AsyncSession = Depends(get_session),
+    session: Session = Depends(get_db),
     admin=Depends(require_role("admin")),
 ):
-    await user_service.update_role(session, user_id, data.role, data.permissions)
+    user_service.update_role(session, user_id, data.role, data.permissions)
     return {"message": "Rôle de l'utilisateur modifié avec succès."}
 
 @router.delete("/api/admin/users/{user_id}")
 async def delete_user(
     user_id: int,
-    session: AsyncSession = Depends(get_session),
+    session: Session = Depends(get_db),
     admin=Depends(require_role("admin")),
 ):
-    await user_service.remove(session, user_id)
+    user_service.remove(session, user_id)
     return {"message": "Utilisateur supprimé avec succès."}

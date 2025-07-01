@@ -1,17 +1,17 @@
 from typing import Literal
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 
-from app.db.session import get_session
+from app.db.session import get_db
 from app.schemas import SearchParams
 from app.services import search_service
 
 router = APIRouter()
 
 @router.get("/api/search")
-async def search(params: SearchParams = Depends(), session: AsyncSession = Depends(get_session)):
+async def search(params: SearchParams = Depends(), session: Session = Depends(get_db)):
     try:
-        return await search_service.search(
+        return search_service.search(
             session,
             query=params.q,
             search_type=params.type or "all",

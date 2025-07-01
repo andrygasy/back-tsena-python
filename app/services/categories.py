@@ -3,12 +3,12 @@ from uuid import UUID
 
 from fastapi import HTTPException
 from sqlalchemy import select, func, update, delete
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 
 from app.models import Category
 
-async def find_all(
-    session: AsyncSession,
+def find_all(
+    session: Session,
     page: int,
     limit: int,
     search: Optional[str] = None,
@@ -18,49 +18,49 @@ async def find_all(
         term = f"%{search}%"
         query = query.where(Category.name.ilike(term))
     count_query = select(func.count()).select_from(query.subquery())
-    total = await session.scalar(count_query)
-    result = await session.execute(
+    total = session.scalar(count_query)
+    result = session.execute(
         query.order_by(Category.created_at.desc())
         .offset((page - 1) * limit)
         .limit(limit)
     )
     return result.scalars().all(), total or 0
 
-async def find_one(session: AsyncSession, category_id: UUID) -> Category:
-    result = await session.execute(select(Category).where(Category.id == category_id))
+def find_one(session: Session, category_id: UUID) -> Category:
+    result = session.execute(select(Category).where(Category.id == category_id))
     category = result.scalars().first()
     if not category:
         raise HTTPException(status_code=404, detail="Catégorie non trouvée.")
     return category
 
-async def create(session: AsyncSession, data) -> Category:
+def create(session: Session, data) -> Category:
     category = Category(**data.dict())
     session.add(category)
-    await session.commit()
-    await session.refresh(category)
+    session.commit()
+    session.refresh(category)
     return category
 
-async def update(session: AsyncSession, category_id: UUID, data) -> Category:
-    result = await session.execute(select(Category).where(Category.id == category_id))
+def update(session: Session, category_id: UUID, data) -> Category:
+    result = session.execute(select(Category).where(Category.id == category_id))
     category = result.scalars().first()
     if not category:
         raise HTTPException(status_code=404, detail="Catégorie non trouvée.")
     for key, value in data.dict(exclude_unset=True).items():
         setattr(category, key, value)
-    await session.commit()
-    await session.refresh(category)
+    session.commit()
+    session.refresh(category)
     return category
 
-async def remove(session: AsyncSession, category_id: UUID, soft_delete: bool = True) -> None:
-    result = await session.execute(select(Category).where(Category.id == category_id))
+def remove(session: Session, category_id: UUID, soft_delete: bool = True) -> None:
+    result = session.execute(select(Category).where(Category.id == category_id))
     category = result.scalars().first()
     if not category:
         raise HTTPException(status_code=404, detail="Catégorie non trouvée.")
-    await session.delete(category)
-    await session.commit()
+    session.delete(category)
+    session.commit()
 
-async def find_tree(session: AsyncSession) -> List[dict]:
-    result = await session.execute(select(Category))
+def find_tree(session: Session) -> List[dict]:
+    result = session.execute(select(Category))
     categories = result.scalars().all()
     mapping = {c.id: {"id": str(c.id), "name": c.name, "description": c.description, "parent_id": str(c.parent_id) if c.parent_id else None, "children": []} for c in categories}
     roots = []
