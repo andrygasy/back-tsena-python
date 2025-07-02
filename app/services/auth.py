@@ -13,6 +13,7 @@ from sqlalchemy.future import select
 from app.models import User
 from app.db.session import get_db
 
+# OAuth2 scheme configuration for token retrieval from requests
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 SECRET_KEY: str = "change-me"
 ALGORITHM: str = "HS256"
