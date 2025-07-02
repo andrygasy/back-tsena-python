@@ -1,4 +1,4 @@
-from .auth import UserCreate, UserOut, Token
+from .auth import UserCreate, UserOut, Token, TokenData
 from .user import (
     UserBase,
     UserPage,
@@ -37,6 +37,7 @@ __all__ = [
     "UserCreate",
     "UserOut",
     "Token",
+    "TokenData",
     "UserBase",
     "UserPage",
     "StatusUpdate",

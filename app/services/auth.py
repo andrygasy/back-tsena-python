@@ -3,15 +3,18 @@ from typing import Optional
 
 import bcrypt
 import jwt
-from fastapi import Depends, HTTPException
-
-from fastapi_jwt_auth import AuthJWT
+from jwt import PyJWTError
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from sqlalchemy.future import select
 
 
 from app.models import User
 from app.db.session import get_db
+from app.schemas import TokenData
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
 SECRET_KEY: str = "change-me"
@@ -49,16 +52,28 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+# Fonction pour vérifier un token JWT et extraire les infos
+def verify_token(token: str = Depends(oauth2_scheme)) -> TokenData:
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Token invalide ou expiré",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id: str = payload.get("sub")
+        if user_id is None:
+            raise credentials_exception
+        return TokenData(user_id=user_id)
+    except PyJWTError:
+        raise credentials_exception
+
 def get_current_user(
-    Authorize: AuthJWT = Depends(),
+    token_data: TokenData = Depends(verify_token),
     session: Session = Depends(get_db),
 ) -> User:
-    try:
-        Authorize.jwt_required()
-    except Exception:
-        raise HTTPException(status_code=401, detail="Invalid token")
-    user_id = Authorize.get_jwt_subject()
-    result = session.execute(select(User).where(User.id == int(user_id)))
+    result = session.execute(select(User).where(User.id == int(token_data.user_id)))
     user = result.scalars().first()
     if not user:
         raise HTTPException(status_code=401, detail="Invalid token")
