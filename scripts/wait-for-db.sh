@@ -14,7 +14,7 @@ echo "DEBUG: psql -h $POSTGRES_HOST -p $POSTGRES_PORT -U $POSTGRES_USER -d $POST
 env | grep POSTGRES
 
 # Attente de la disponibilité de PostgreSQL
-until PGPASSWORD=$POSTGRES_PASSWORD psql -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c '\q'; do
+until PGPASSWORD=postgres psql -h db -p 5432 -U postgres -d postgres -c '\q'; do
   >&2 echo "⏳ PostgreSQL est indisponible - attente..."
   >&2 echo "🔁 Tentative de connexion avec :"
   >&2 echo "    HOST=$POSTGRES_HOST"
