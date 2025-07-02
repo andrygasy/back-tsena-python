@@ -4,7 +4,7 @@ from typing import Optional
 import bcrypt
 import jwt
 from fastapi import Depends, HTTPException
-from fastapi.security import OAuth2PasswordBearer
+
 from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.orm import Session
 from sqlalchemy.future import select
@@ -13,8 +13,7 @@ from sqlalchemy.future import select
 from app.models import User
 from app.db.session import get_db
 
-# OAuth2 scheme configuration for token retrieval from requests
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+
 SECRET_KEY: str = "change-me"
 ALGORITHM: str = "HS256"
 

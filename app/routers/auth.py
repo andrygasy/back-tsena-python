@@ -5,7 +5,13 @@ from app.db.session import get_db
 from app.schemas import UserCreate, UserOut, Token
 from app.services import auth as auth_service
 
+from fastapi.security import OAuth2PasswordBearer
+
 router = APIRouter()
+
+
+# OAuth2 scheme configuration for token retrieval from requests
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 @router.post("/register", response_model=UserOut, status_code=status.HTTP_201_CREATED)
 async def register(user_in: UserCreate, session: Session = Depends(get_db)):
