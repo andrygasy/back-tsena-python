@@ -3,18 +3,9 @@ set -e
 
 sleep 15
 
-echo "📦 Variables d'environnement pour la connexion PostgreSQL :"
-echo "  🔐 POSTGRES_USER=$POSTGRES_USER"
-echo "  🔐 POSTGRES_PASSWORD=$POSTGRES_PASSWORD"
-echo "  🌐 POSTGRES_HOST=$POSTGRES_HOST"
-echo "  🔌 POSTGRES_PORT=$POSTGRES_PORT"
-echo "  🗃️ POSTGRES_DB=$POSTGRES_DB"
-
-echo "DEBUG: psql -h $POSTGRES_HOST -p $POSTGRES_PORT -U $POSTGRES_USER -d $POSTGRES_DB"
-env | grep POSTGRES
 
 # Attente de la disponibilité de PostgreSQL
-until PGPASSWORD=postgres psql -h db -p 5432 -U postgres -d postgres -c '\q'; do
+until PGPASSWORD=adminpassword psql -h 51.38.237.164 -p 6969 -U admin -d mydatabase -c '\q'; do
   >&2 echo "⏳ PostgreSQL est indisponible - attente..."
   >&2 echo "🔁 Tentative de connexion avec :"
   >&2 echo "    HOST=$POSTGRES_HOST"
