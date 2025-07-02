@@ -12,7 +12,7 @@ __all__ = [
     "Base",
     "Category",
     "Product",
-    "ProductStatus"
+    "ProductStatus",
     "Order",
     "OrderStatus",
     "Service",
