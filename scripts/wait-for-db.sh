@@ -1,12 +1,17 @@
 #!/bin/sh
 set -e
 
+sleep 15
+
 echo "📦 Variables d'environnement pour la connexion PostgreSQL :"
 echo "  🔐 POSTGRES_USER=$POSTGRES_USER"
 echo "  🔐 POSTGRES_PASSWORD=$POSTGRES_PASSWORD"
 echo "  🌐 POSTGRES_HOST=$POSTGRES_HOST"
 echo "  🔌 POSTGRES_PORT=$POSTGRES_PORT"
 echo "  🗃️ POSTGRES_DB=$POSTGRES_DB"
+
+echo "DEBUG: psql -h $POSTGRES_HOST -p $POSTGRES_PORT -U $POSTGRES_USER -d $POSTGRES_DB"
+env | grep POSTGRES
 
 # Attente de la disponibilité de PostgreSQL
 until PGPASSWORD=$POSTGRES_PASSWORD psql -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c '\q'; do
