@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-DATABASE_URL = "postgresql://admin:adminpassword@51.38.237.164:5432/mydatabase"
+DATABASE_URL = "postgresql://admin:adminpassword@51.38.237.164:6969/mydatabase"
 
 
 # Création du moteur SQLAlchemy
