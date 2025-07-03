@@ -79,3 +79,13 @@ def get_current_user(
     if not user:
         raise HTTPException(status_code=401, detail="Invalid token")
     return user
+
+def is_admin(current_user: User = Depends(get_current_user)) -> User:
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not enough permissions")
+    return current_user
+
+def is_professional(current_user: User = Depends(get_current_user)) -> User:
+    if not current_user.is_professional:
+        raise HTTPException(status_code=403, detail="User is not a professional")
+    return current_user
