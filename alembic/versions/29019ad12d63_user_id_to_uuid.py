@@ -1,8 +1,8 @@
-"""Initial migration
+"""user id to uuid
 
-Revision ID: 521035f7a38f
+Revision ID: 29019ad12d63
 Revises: 
-Create Date: 2025-07-01 18:48:40.431911
+Create Date: 2025-07-03 17:25:32.653163
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = '521035f7a38f'
+revision: str = '29019ad12d63'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -67,7 +67,7 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('users',
-    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.UUID(), nullable=False),
     sa.Column('name', sa.String(), nullable=True),
     sa.Column('email', sa.String(), nullable=False),
     sa.Column('password_hash', sa.String(), nullable=False),
@@ -87,7 +87,7 @@ def upgrade() -> None:
     op.create_index(op.f('ix_users_id'), 'users', ['id'], unique=False)
     op.create_table('orders',
     sa.Column('id', sa.UUID(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('user_id', sa.UUID(), nullable=False),
     sa.Column('items', postgresql.JSONB(astext_type=sa.Text()), nullable=False),
     sa.Column('total', sa.Float(), nullable=False),
     sa.Column('status', sa.String(), nullable=False),
@@ -102,7 +102,7 @@ def upgrade() -> None:
     sa.Column('description', sa.Text(), nullable=True),
     sa.Column('price', sa.Float(), nullable=False),
     sa.Column('category_id', sa.UUID(), nullable=True),
-    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('user_id', sa.UUID(), nullable=True),
     sa.Column('images', postgresql.ARRAY(sa.String()), nullable=True),
     sa.Column('stock', sa.Integer(), nullable=False),
     sa.Column('status', sa.String(), nullable=False),
