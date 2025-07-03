@@ -1,4 +1,5 @@
 from typing import Optional
+from uuid import UUID
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
@@ -24,7 +25,7 @@ async def list_users(
 
 @router.put("/api/admin/users/{user_id}/status")
 async def update_user_status(
-    user_id: int,
+    user_id: UUID,
     data: StatusUpdate,
     session: Session = Depends(get_db),
     admin=Depends(require_role("admin")),
@@ -34,7 +35,7 @@ async def update_user_status(
 
 @router.put("/api/admin/users/{user_id}/role")
 async def update_user_role(
-    user_id: int,
+    user_id: UUID,
     data: RoleUpdate,
     session: Session = Depends(get_db),
     admin=Depends(require_role("admin")),
@@ -44,7 +45,7 @@ async def update_user_role(
 
 @router.delete("/api/admin/users/{user_id}")
 async def delete_user(
-    user_id: int,
+    user_id: UUID,
     session: Session = Depends(get_db),
     admin=Depends(require_role("admin")),
 ):

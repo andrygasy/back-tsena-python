@@ -20,7 +20,7 @@ class Product(Base):
     description = Column(Text, nullable=True)
     price = Column(Float, nullable=False)
     category_id = Column(UUID(as_uuid=True), ForeignKey("categories.id"), nullable=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
     images = Column(ARRAY(String), nullable=True)
     stock = Column(Integer, nullable=False, default=0)
     status = Column(String, nullable=False, default=ProductStatus.pending.value)

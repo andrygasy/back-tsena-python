@@ -12,7 +12,7 @@ class ProductBase(BaseModel):
     description: Optional[str] = None
     price: float
     category_id: Optional[UUID] = None
-    user_id: Optional[int] = None
+    user_id: Optional[UUID] = None
     images: Optional[List[str]] = None
     stock: int
     status: ProductStatus
@@ -27,7 +27,7 @@ class ProductCreate(BaseModel):
     description: Optional[str] = None
     price: float
     category_id: Optional[UUID] = None
-    user_id: Optional[int] = None
+    user_id: Optional[UUID] = None
     images: Optional[List[str]] = None
     stock: int
     status: Optional[ProductStatus] = ProductStatus.pending

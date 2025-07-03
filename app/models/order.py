@@ -17,7 +17,7 @@ class Order(Base):
     __tablename__ = "orders"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_id = Column(ForeignKey("users.id"), nullable=False)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     items = Column(JSONB, nullable=False)
     total = Column(Float, nullable=False, default=0.0)
     status = Column(String, nullable=False, default=OrderStatus.pending.value)

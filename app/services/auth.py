@@ -8,6 +8,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from sqlalchemy.future import select
+from uuid import UUID
 
 
 from app.models import User
@@ -73,7 +74,7 @@ def get_current_user(
     token_data: TokenData = Depends(verify_token),
     session: Session = Depends(get_db),
 ) -> User:
-    result = session.execute(select(User).where(User.id == int(token_data.user_id)))
+    result = session.execute(select(User).where(User.id == UUID(token_data.user_id)))
     user = result.scalars().first()
     if not user:
         raise HTTPException(status_code=401, detail="Invalid token")
