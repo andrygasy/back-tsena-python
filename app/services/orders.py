@@ -9,7 +9,7 @@ from app.models import Order, OrderStatus
 from app.schemas.orders import OrderCreate, OrderItem
 
 def create_order(
-    session: Session, user_id: int, data: OrderCreate
+    session: Session, user_id: UUID, data: OrderCreate
 ) -> Order:
     items = [item.dict() for item in data.items]
     total = sum(item["price"] * item["quantity"] for item in items)
@@ -21,7 +21,7 @@ def create_order(
 
 def find_all_by_user(
     session: Session,
-    user_id: int,
+    user_id: UUID,
     page: int,
     limit: int,
 ) -> Tuple[List[Order], int]:

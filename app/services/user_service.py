@@ -1,4 +1,5 @@
 from typing import Optional, Tuple, List
+from uuid import UUID
 
 from sqlalchemy.future import select
 from sqlalchemy import update, delete, func
@@ -28,7 +29,7 @@ def find_all(
     result = session.execute(query.offset((page - 1) * limit).limit(limit))
     return result.scalars().all(), total or 0
 
-def update_status(session: Session, user_id: int, status: str, reason: str) -> None:
+def update_status(session: Session, user_id: UUID, status: str, reason: str) -> None:
     result = session.execute(select(User).where(User.id == user_id))
     user = result.scalars().first()
     if not user:
@@ -36,7 +37,7 @@ def update_status(session: Session, user_id: int, status: str, reason: str) -> N
     user.status = status
     session.commit()
 
-def update_role(session: Session, user_id: int, role: str, permissions: Optional[list]) -> None:
+def update_role(session: Session, user_id: UUID, role: str, permissions: Optional[list]) -> None:
     result = session.execute(select(User).where(User.id == user_id))
     user = result.scalars().first()
     if not user:
@@ -44,11 +45,11 @@ def update_role(session: Session, user_id: int, role: str, permissions: Optional
     user.role = role
     session.commit()
 
-def remove(session: Session, user_id: int) -> None:
+def remove(session: Session, user_id: UUID) -> None:
     session.execute(delete(User).where(User.id == user_id))
     session.commit()
 
-def update_profile(session: Session, user_id: int, name: str, phone: Optional[str], avatar: Optional[str]) -> User:
+def update_profile(session: Session, user_id: UUID, name: str, phone: Optional[str], avatar: Optional[str]) -> User:
     result = session.execute(select(User).where(User.id == user_id))
     user = result.scalars().first()
     if not user:

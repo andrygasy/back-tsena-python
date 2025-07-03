@@ -1,9 +1,10 @@
 from typing import Optional, List
 from datetime import datetime
+from uuid import UUID
 from pydantic import BaseModel
 
 class UserBase(BaseModel):
-    id: int
+    id: UUID
     name: Optional[str]
     email: str
     role: str
@@ -35,7 +36,7 @@ class RoleUpdate(BaseModel):
     permissions: Optional[List[str]] = None
 
 class ProfileOut(BaseModel):
-    id: int
+    id: UUID
     name: Optional[str]
     email: str
     is_professional: bool
