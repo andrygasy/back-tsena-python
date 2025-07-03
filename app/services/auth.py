@@ -8,6 +8,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from sqlalchemy.future import select
+from uuid import UUID
 
 
 from app.models import User
@@ -73,8 +74,18 @@ def get_current_user(
     token_data: TokenData = Depends(verify_token),
     session: Session = Depends(get_db),
 ) -> User:
-    result = session.execute(select(User).where(User.id == int(token_data.user_id)))
+    result = session.execute(select(User).where(User.id == UUID(token_data.user_id)))
     user = result.scalars().first()
     if not user:
         raise HTTPException(status_code=401, detail="Invalid token")
     return user
+
+def is_admin(current_user: User = Depends(get_current_user)) -> User:
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not enough permissions")
+    return current_user
+
+def is_professional(current_user: User = Depends(get_current_user)) -> User:
+    if not current_user.is_professional:
+        raise HTTPException(status_code=403, detail="User is not a professional")
+    return current_user

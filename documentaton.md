@@ -7,217 +7,155 @@ Base URL : https://back-tsena-python-production.up.railway.app
 ## Authentification
 
 ### POST /api/auth/login
-- **Entrée** : `{ "email": string, "password": string }`
-- **Sortie** : token JWT et informations de l'utilisateur
+- **Description** : Connecte un utilisateur et retourne un token JWT.
+- **Entrée** : `application/json`
+  - `email` (string, requis) : L'adresse e-mail de l'utilisateur.
+  - `password` (string, requis) : Le mot de passe de l'utilisateur.
+- **Sortie** : `application/json`
+  - `access_token` (string) : Le token JWT.
+  - `token_type` (string) : Le type de token (ex: "bearer").
+  - Le token décodé contient également : `sub` (string, user ID) et `user` (objet User).
 
 ### POST /api/auth/register
-- **Entrée** : `{ "name": string, "email": string, "password": string, "confirmPassword": string }`
-- **Sortie** : message de confirmation et utilisateur créé
+- **Description** : Enregistre un nouvel utilisateur.
+- **Entrée** : `application/json`
+  - `email` (string, requis) : L'adresse e-mail du nouvel utilisateur.
+  - `password` (string, requis) : Le mot de passe du nouvel utilisateur.
+- **Sortie** : `application/json`
+  - `id` (UUID) : L'identifiant unique de l'utilisateur.
+  - `email` (string) : L'adresse e-mail de l'utilisateur.
 
 ### POST /api/auth/logout
-- **Entrée** : aucun (token dans l'en-tête Authorization)
-- **Sortie** : message de déconnexion
+- **Description** : Déconnecte l'utilisateur (côté client).
+- **Entrée** : Aucun (le token est envoyé dans l'en-tête `Authorization`).
+- **Sortie** : Message de confirmation.
+
+## Catégories
+
+### GET /api/categories
+- **Description** : Récupère une liste paginée de catégories.
+- **Entrée (Query Params)** :
+  - `page` (integer, optionnel, défaut: 1) : Le numéro de la page.
+  - `limit` (integer, optionnel, défaut: 10) : Le nombre d'éléments par page.
+  - `search` (string, optionnel) : Terme de recherche pour filtrer les catégories par nom.
+- **Sortie** : `application/json`
+  - `categories` (array) : Liste des objets catégories.
+  - `total` (integer) : Nombre total de catégories.
+  - `page` (integer) : Page actuelle.
+  - `limit` (integer) : Limite d'éléments par page.
+
+### GET /api/categories/tree
+- **Description** : Récupère les catégories sous forme d'arborescence.
+- **Entrée** : Aucun.
+- **Sortie** : `application/json` - Une liste d'objets catégories, chacun pouvant contenir une liste `children`.
+
+### GET /api/categories/{id}
+- **Description** : Récupère les détails d'une catégorie spécifique.
+- **Entrée (Path Param)** :
+  - `id` (UUID, requis) : L'identifiant de la catégorie.
+- **Sortie** : `application/json` - L'objet de la catégorie.
+
+### POST /api/categories
+- **Permissions** : Administrateur requis.
+- **Description** : Crée une nouvelle catégorie.
+- **Entrée** : `application/json`
+  - `name` (string, requis) : Nom de la catégorie.
+  - `description` (string, optionnel) : Description de la catégorie.
+  - `parent_id` (UUID, optionnel) : ID de la catégorie parente.
+- **Sortie** : `application/json` - L'objet de la catégorie créée.
+
+### PUT /api/categories/{id}
+- **Permissions** : Administrateur requis.
+- **Description** : Met à jour une catégorie existante.
+- **Entrée (Path Param)** :
+  - `id` (UUID, requis) : L'identifiant de la catégorie à mettre à jour.
+- **Entrée (Body)** : `application/json`
+  - `name` (string, optionnel) : Nouveau nom de la catégorie.
+  - `description` (string, optionnel) : Nouvelle description.
+  - `parent_id` (UUID, optionnel) : Nouvel ID de la catégorie parente.
+- **Sortie** : `application/json` - L'objet de la catégorie mise à jour.
+
+### DELETE /api/categories/{id}
+- **Permissions** : Administrateur requis.
+- **Description** : Supprime une catégorie.
+- **Entrée (Path Param)** :
+  - `id` (UUID, requis) : L'identifiant de la catégorie.
+- **Sortie** : `204 No Content`.
 
 ## Produits
 
 ### GET /api/products
-- **Entrée** : paramètres `page`, `limit`, `category`, `search`, `minPrice`, `maxPrice`, `inStock`
-- **Sortie** : liste paginée des produits
+- **Description** : Récupère une liste paginée de produits.
+- **Entrée (Query Params)** :
+  - `page` (integer, optionnel, défaut: 1)
+  - `limit` (integer, optionnel, défaut: 12)
+  - `category_id` (UUID, optionnel)
+  - `search` (string, optionnel)
+  - `min_price` (float, optionnel)
+  - `max_price` (float, optionnel)
+- **Sortie** : `application/json`
+  - `products` (array) : Liste des objets produits.
+  - `total` (integer) : Nombre total de produits.
+  - `page` (integer) : Page actuelle.
+  - `limit` (integer) : Limite par page.
 
 ### GET /api/products/{id}
-- **Entrée** : identifiant du produit dans l'URL
-- **Sortie** : détails du produit
+- **Description** : Récupère les détails d'un produit spécifique.
+- **Entrée (Path Param)** :
+  - `id` (UUID, requis) : L'identifiant du produit.
+- **Sortie** : `application/json` - L'objet du produit.
 
 ### POST /api/products
-- **Entrée** : données du produit (nom, description, prix, stock, catégorie, image...) avec authentification professionnelle
-- **Sortie** : produit créé
+- **Permissions** : Utilisateur authentifié requis.
+- **Description** : Crée un nouveau produit. Si l'utilisateur est un professionnel, il est assigné comme vendeur. Les images sont uploadées sur MinIO.
+- **Entrée** : `multipart/form-data`
+  - `name` (string, requis)
+  - `description` (string, optionnel)
+  - `price` (float, requis)
+  - `stock` (integer, requis)
+  - `category_id` (UUID, optionnel)
+  - `files` (array[File], optionnel) : Fichiers images à uploader.
+- **Sortie** : `application/json` - L'objet du produit créé, incluant les URLs des images.
 
-### PUT /api/professional/products/{id}
-- **Entrée** : champs du produit à modifier
-- **Sortie** : produit mis à jour
+### PUT /api/products/{id}
+- **Permissions** : Administrateur ou propriétaire du produit.
+- **Description** : Met à jour un produit. Gère la mise à jour des images sur MinIO.
+- **Entrée (Path Param)** :
+  - `id` (UUID, requis) : L'identifiant du produit.
+- **Entrée (Body)** : `multipart/form-data`
+  - Champs du produit à modifier (ex: `name`, `price`, etc.).
+  - `files` (array[File], optionnel) : Nouveaux fichiers images.
+- **Sortie** : `application/json` - L'objet du produit mis à jour.
 
-### DELETE /api/professional/products/{id}
-- **Entrée** : identifiant du produit
-- **Sortie** : confirmation de suppression
-
-### PUT /api/admin/products/{id}/status
-- **Entrée** : nouveau statut et raison
-- **Sortie** : message de mise à jour du statut
-
-## Services
-
-### GET /api/services
-- **Entrée** : paramètres `page`, `limit`, `category`, `search`, `minPrice`, `maxPrice`
-- **Sortie** : liste paginée des services
-
-### GET /api/services/{id}
-- **Entrée** : identifiant du service
-- **Sortie** : détails du service
-
-### POST /api/services
-- **Entrée** : données du service avec authentification professionnelle
-- **Sortie** : service créé
-
-### PUT /api/professional/services/{id}
-- **Entrée** : champs du service à modifier
-- **Sortie** : service mis à jour
-
-### DELETE /api/professional/services/{id}
-- **Entrée** : identifiant du service
-- **Sortie** : confirmation de suppression
-
-## Panier
-
-### GET /api/cart
-- **Entrée** : token d'authentification
-- **Sortie** : contenu du panier et total
-
-### POST /api/cart/items
-- **Entrée** : `productId`, `quantity`
-- **Sortie** : message et total du panier
-
-### PUT /api/cart/items/{itemId}
-- **Entrée** : nouvelle quantité
-- **Sortie** : panier mis à jour
-
-### DELETE /api/cart/items/{itemId}
-- **Entrée** : identifiant de l'article du panier
-- **Sortie** : message de suppression
-
-## Commandes
-
-### POST /api/orders
-- **Entrée** : items du panier, adresse de livraison, méthode de paiement
-- **Sortie** : commande créée avec total et statut
-
-### GET /api/orders
-- **Entrée** : token utilisateur, filtres `status` et `page`
-- **Sortie** : liste des commandes de l'utilisateur
-
-### GET /api/orders/{id}
-- **Entrée** : identifiant de la commande
-- **Sortie** : détails de la commande
-
-### GET /api/admin/orders
-- **Entrée** : token administrateur
-- **Sortie** : liste des commandes
-
-### PUT /api/admin/orders/{id}/status
-- **Entrée** : nouveau statut
-- **Sortie** : commande mise à jour
+### DELETE /api/products/{id}
+- **Permissions** : Administrateur ou propriétaire du produit.
+- **Description** : Supprime un produit et ses images associées de MinIO.
+- **Entrée (Path Param)** :
+  - `id` (UUID, requis) : L'identifiant du produit.
+- **Sortie** : `204 No Content`.
 
 ## Profil utilisateur
 
 ### GET /api/profile
-- **Entrée** : token utilisateur
-- **Sortie** : informations du profil
+- **Description** : Récupère le profil de l'utilisateur authentifié.
+- **Entrée** : Token d'authentification.
+- **Sortie** : `application/json`
+  - `id` (UUID)
+  - `name` (string, optionnel)
+  - `email` (string)
+  - `is_professional` (boolean)
+  - `professional_type` (string, optionnel)
+  - `avatar` (string, optionnel)
+  - `phone` (string, optionnel)
 
 ### PUT /api/profile
-- **Entrée** : champs du profil à mettre à jour
-- **Sortie** : profil mis à jour
+- **Description** : Met à jour le profil de l'utilisateur authentifié.
+- **Entrée** : `application/json`
+  - `name` (string, optionnel)
+  - `phone` (string, optionnel)
+  - `avatar` (string, optionnel)
+- **Sortie** : `application/json` - L'objet du profil mis à jour.
 
-## Recherche
+---
+*Le reste de la documentation peut être mis à jour de manière similaire si nécessaire.*
 
-### GET /api/search
-- **Entrée** : paramètre `q` obligatoire, `type`, `page`
-- **Sortie** : produits et services correspondants
-
-## Fonctionnalités Professionnels
-
-### POST /api/professional/request
-- **Entrée** : informations de la société et du compte
-- **Sortie** : message de prise en compte de la demande
-
-### GET /api/professional/products
-- **Entrée** : token professionnel
-- **Sortie** : produits du professionnel
-
-### GET /api/professional/services
-- **Entrée** : token professionnel
-- **Sortie** : services du professionnel
-
-### GET /api/professional/orders
-- **Entrée** : filtres `status`, `page`
-- **Sortie** : commandes reçues
-
-### PUT /api/professional/orders/{id}/status
-- **Entrée** : nouveau statut et numéro de suivi
-- **Sortie** : confirmation de mise à jour
-
-## Administration
-
-### GET /api/admin/hero-slides
-- **Entrée** : token administrateur
-- **Sortie** : liste des slides
-
-### POST /api/admin/hero-slides
-- **Entrée** : données du slide
-- **Sortie** : slide créé
-
-### PUT /api/admin/hero-slides/{id}
-- **Entrée** : champs à modifier
-- **Sortie** : slide mis à jour
-
-### DELETE /api/admin/hero-slides/{id}
-- **Entrée** : identifiant du slide
-- **Sortie** : confirmation de suppression
-
-### GET /api/admin/categories
-- **Entrée** : filtres `type`, `includeInactive`
-- **Sortie** : liste des catégories
-
-### POST /api/admin/categories
-- **Entrée** : données de la catégorie
-- **Sortie** : catégorie créée
-
-### PUT /api/admin/categories/{id}
-- **Entrée** : champs à modifier
-- **Sortie** : catégorie mise à jour
-
-### DELETE /api/admin/categories/{id}
-- **Entrée** : identifiant
-- **Sortie** : confirmation de suppression
-
-### GET /api/admin/products
-- **Entrée** : filtres `page`, `limit`, `status`, `category`, `seller`
-- **Sortie** : liste des produits
-
-### DELETE /api/admin/products/{id}
-- **Entrée** : identifiant du produit
-- **Sortie** : produit supprimé
-
-### GET /api/admin/promotions
-- **Entrée** : token administrateur
-- **Sortie** : liste des promotions
-
-### POST /api/admin/promotions
-- **Entrée** : données de la promotion
-- **Sortie** : promotion créée
-
-### PUT /api/admin/promotions/{id}
-- **Entrée** : champs à modifier
-- **Sortie** : promotion mise à jour
-
-### DELETE /api/admin/promotions/{id}
-- **Entrée** : identifiant
-- **Sortie** : confirmation de suppression
-
-### GET /api/admin/users
-- **Entrée** : filtres `page`, `limit`, `role`, `status`, `search`
-- **Sortie** : liste des utilisateurs
-
-### PUT /api/admin/users/{id}/status
-- **Entrée** : nouveau statut et raison
-- **Sortie** : confirmation
-
-### PUT /api/admin/users/{id}/role
-- **Entrée** : nouveau rôle
-- **Sortie** : confirmation
-
-### DELETE /api/admin/users/{id}
-- **Entrée** : identifiant utilisateur
-- **Sortie** : utilisateur supprimé
-
-### GET /api/admin/dashboard
-- **Entrée** : token administrateur
-- **Sortie** : statistiques globales

@@ -13,7 +13,7 @@ class OrderItem(BaseModel):
 
 class OrderBase(BaseModel):
     id: UUID
-    user_id: int
+    user_id: UUID
     items: List[OrderItem]
     total: float
     status: OrderStatus

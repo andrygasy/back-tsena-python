@@ -22,7 +22,7 @@ async def list_products(
     limit: int = 20,
     status: Optional[str] = None,
     category_id: Optional[UUID] = None,
-    user_id: Optional[int] = None,
+    user_id: Optional[UUID] = None,
     session: Session = Depends(get_db),
     admin=Depends(require_role("admin")),
 ):

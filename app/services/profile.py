@@ -9,7 +9,7 @@ from app.models import User
 from app.schemas.profile import UpdateProfile
 
 
-def get_profile(session: Session, user_id: int) -> User:
+def get_profile(session: Session, user_id: UUID) -> User:
     result = session.execute(select(User).where(User.id == user_id))
     user = result.scalars().first()
     if not user:
@@ -18,7 +18,7 @@ def get_profile(session: Session, user_id: int) -> User:
 
 
 def update_profile(
-    session: Session, user_id: int, data: UpdateProfile
+    session: Session, user_id: UUID, data: UpdateProfile
 ) -> User:
     result = session.execute(select(User).where(User.id == user_id))
     user = result.scalars().first()

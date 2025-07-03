@@ -21,5 +21,5 @@ async def login(user_in: UserCreate, session: Session = Depends(get_db)):
     user = auth_service.authenticate_user(session, user_in.email, user_in.password)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
-    token = auth_service.create_access_token({"sub": str(user.id)})
+    token = auth_service.create_access_token({"sub": str(user.id), "user": UserOut.from_orm(user).dict()})
     return {"access_token": token, "token_type": "bearer"}

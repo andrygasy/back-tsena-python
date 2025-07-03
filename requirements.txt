@@ -13,3 +13,6 @@ sqlalchemy
 alembic
 psycopg2-binary
 email-validator
+
+boto3
+python-multipart
