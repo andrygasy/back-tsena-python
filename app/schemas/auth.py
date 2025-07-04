@@ -4,7 +4,6 @@ from uuid import UUID
 from pydantic import BaseModel, validator
 
 class UserCreate(BaseModel):
-    name : str
     email: str
     password: str
 
