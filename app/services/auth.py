@@ -25,9 +25,9 @@ def get_user_by_email(session: Session, email: str) -> Optional[User]:
     result = session.execute(select(User).where(User.email == email))
     return result.scalars().first()
 
-def create_user(session: Session, email: str, password: str) -> User:
+def create_user(session: Session, name : str, email: str, password: str) -> User:
     hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
-    user = User(email=email, password_hash=hashed)
+    user = User(name=name, email=email, password_hash=hashed)
     session.add(user)
     session.commit()
     session.refresh(user)
@@ -39,6 +39,7 @@ def authenticate_user(session: Session, email: str, password: str) -> Optional[U
         return None
     if not bcrypt.checkpw(password.encode(), user.password_hash.encode()):
         return None
+    print(f"Authenticated user: {user.__dict__}")
     return user
 
 
